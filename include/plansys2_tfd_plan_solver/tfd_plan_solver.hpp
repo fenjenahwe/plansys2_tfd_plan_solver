@@ -32,12 +32,11 @@ class TFDPlanSolver : public PlanSolverBase
 public:
   TFDPlanSolver();
 
-  void configure(rclcpp_lifecycle::LifecycleNode::SharedPtr, const std::string &);
+  void configure(rclcpp_lifecycle::LifecycleNode::SharedPtr &, const std::string &);
 
   std::optional<plansys2_msgs::msg::Plan> getPlan(
     const std::string & domain, const std::string & problem,
-    const std::string & node_namespace = "",
-    const rclcpp::Duration solver_timeout = 15s);
+    const std::string & node_namespace = ""); // removed timeout from being an argument here so that this can match the signature of the signature of the pure virtual function in PlanSolverBase
 
   bool isDomainValid(
     const std::string & domain,

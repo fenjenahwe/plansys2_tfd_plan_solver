@@ -33,9 +33,8 @@ TFDPlanSolver::TFDPlanSolver()
 {
 }
 
-void
-TFDPlanSolver::configure(
-  rclcpp_lifecycle::LifecycleNode::SharedPtr lc_node,
+void TFDPlanSolver::configure(
+  rclcpp_lifecycle::LifecycleNode::SharedPtr & lc_node,
   const std::string & plugin_name)
 {
   lc_node_ = lc_node;
@@ -57,9 +56,9 @@ TFDPlanSolver::configure(
 std::optional<plansys2_msgs::msg::Plan>
 TFDPlanSolver::getPlan(
   const std::string & domain, const std::string & problem,
-  const std::string & node_namespace,
-  const rclcpp::Duration solver_timeout)
+  const std::string & node_namespace)
 {
+  rclcpp::Duration solver_timeout = 45s; // moved this from being an argument of getPlan to being set here, because of issues of mismatch with signature of the pure virtual function in PlanSolverBase
   if (system(nullptr) == 0) {
     return {};
   }
@@ -92,7 +91,7 @@ TFDPlanSolver::getPlan(
   problem_out << problem;
   problem_out.close();
 
-  RCLCPP_INFO(lc_node_->get_logger(), "[%s-tfd] called with timeout %d seconds",
+  RCLCPP_INFO(lc_node_->get_logger(), "[%s-tfd] called with timeout  %f seconds",
 +             lc_node_->get_name(), solver_timeout.seconds());
 
   // Translate the domain and problem files to SAS.
